@@ -49,7 +49,7 @@ async def handle_request():
     # Total: 1 seconde, le worker reste libre pour traiter d'autres requêtes
 ```
 
-#### Comparaison Visuelle
+#### Comparaison Visuelle avec 1 worker
 ```
 SYNCHRONE (Flask)
 ═════════════════
