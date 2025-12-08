@@ -15,7 +15,6 @@
 - [Installation et Utilisation](#-installation-et-utilisation)
 - [Résultats Attendus](#-résultats-attendus)
 - [Explications Détaillées](#-explications-détaillées)
-- [Guide de Migration](#-guide-de-migration)
 
 ---
 
