@@ -49,6 +49,22 @@ async def handle_request():
     # Total: 1 seconde, le worker reste libre pour traiter d'autres requêtes
 ```
 
+## Comparaison Visuelle
+```
+SYNCHRONE (Flask)
+═════════════════
+Requête 1: [████████████] 500ms          
+                          Requête 2: [████████████████████] 800ms
+           └──────────────────────────────────────────────┘
+                             Total: 1300ms
+
+
+ASYNCHRONE (Quart)  
+══════════════════
+Requête 1: [████████████] 500ms
+Requête 2: [████████████████████] 800ms
+           └──────────────────┘
+              Total: 800ms
 ---
 
 ## 🔍 Les Solutions Comparées
@@ -630,6 +646,8 @@ MIT License - Libre d'utilisation pour l'apprentissage et la démonstration.
 2. 🚫 **Flask + async sur WSGI:** NE PAS FAIRE - aucun bénéfice
 3. 🚫 **Flask + ASGI wrapper:** NE PAS FAIRE - overhead sans bénéfice
 4. ✅ **Quart:** Solution moderne pour I/O-bound avec async natif
+
+Sans asyncio.gather, flask reste asynchrone
 
 **Règle simple:**
 - Si vous avez besoin d'async → Utilisez Quart (ou FastAPI)
