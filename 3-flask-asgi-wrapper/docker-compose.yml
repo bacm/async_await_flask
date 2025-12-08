@@ -1,0 +1,10 @@
+
+services:
+  flask-asgi-wrapper:
+    build: .
+    container_name: flask-asgi-wrapper
+    ports:
+      - "5003:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

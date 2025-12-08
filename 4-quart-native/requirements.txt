@@ -1,0 +1,4 @@
+Quart==0.19.6
+Werkzeug==3.0.1
+uvicorn[standard]==0.25.0
+httpx==0.25.2

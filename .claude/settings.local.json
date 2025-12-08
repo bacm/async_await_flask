@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for dir in 1-flask-wsgi 2-flask-async-trap 3-flask-asgi-wrapper 4-quart-native)",
+      "Bash(do sed -i \"/^version:/d\" $dir/docker-compose.yml)",
+      "Bash(done)",
+      "Bash(./test-docker-compose.sh)",
+      "Bash(./setup.sh)",
+      "Bash(docker compose:*)",
+      "Bash(pip install:*)",
+      "Bash(for port in 5001 5002 5003 5004)",
+      "Bash(do if curl -sf http://localhost:$port/health)",
+      "Bash(then echo \"✓ Port $port: OK\")",
+      "Bash(else echo \"✗ Port $port: DOWN\")",
+      "Bash(fi)",
+      "Bash(docker logs:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(pipenv install:*)",
+      "Bash(make test:*)",
+      "Bash(time curl:*)",
+      "Bash(time curl -s http://localhost:5002/slow)",
+      "Bash(time curl -s http://localhost:5003/slow)",
+      "Bash(time curl -s http://localhost:5004/slow)",
+      "Bash(docker exec:*)",
+      "Bash(tee:*)",
+      "Bash(jq:*)",
+      "Bash(pipenv run python:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

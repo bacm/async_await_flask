@@ -1,0 +1,10 @@
+
+services:
+  quart-native:
+    build: .
+    container_name: quart-native
+    ports:
+      - "5004:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
