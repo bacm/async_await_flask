@@ -554,8 +554,6 @@ MIT License - Libre d'utilisation pour l'apprentissage et la démonstration.
 3. 🚫 **Flask + ASGI wrapper:** NE PAS FAIRE - overhead sans bénéfice
 4. ✅ **Quart:** Solution moderne pour I/O-bound avec async natif
 
-Sans asyncio.gather, flask reste asynchrone
-
 **Règle simple:**
 - Si vous avez besoin d'async → Utilisez Quart (ou FastAPI)
 - Sinon → Flask WSGI fonctionne parfaitement
