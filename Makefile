@@ -37,9 +37,8 @@ up: ## Lance tous les services
 	@echo ""
 	@echo "Services are available at:"
 	@echo "  • Flask WSGI:         http://localhost:5001"
-	@echo "  • Flask Async Trap:   http://localhost:5002"
-	@echo "  • Flask ASGI Wrapper: http://localhost:5003"
-	@echo "  • Quart Native:       http://localhost:5004"
+	@echo "  • Flask ASGI Wrapper: http://localhost:5002"
+	@echo "  • Quart Native:       http://localhost:5003"
 	@echo ""
 	@echo "Run '$(GREEN)make health$(NC)' to check if services are ready"
 
@@ -78,13 +77,13 @@ status: ## Affiche le status de tous les services
 	@$(DOCKER_COMPOSE) ps
 	@echo ""
 	@echo "$(YELLOW)Docker stats:$(NC)"
-	@docker stats --no-stream flask-wsgi flask-async-trap flask-asgi-wrapper quart-native 2>/dev/null || true
+	@docker stats --no-stream flask-wsgi flask-asgi-wrapper quart-native 2>/dev/null || true
 
 health: ## Vérifie la santé de tous les services
 	@echo "$(YELLOW)Checking services health...$(NC)"
 	@echo ""
-	@for service in flask-wsgi flask-async-trap flask-asgi-wrapper quart-native; do \
-		port=$$(echo $$service | sed 's/flask-wsgi/5001/;s/flask-async-trap/5002/;s/flask-asgi-wrapper/5003/;s/quart-native/5004/'); \
+	@for service in flask-wsgi flask-asgi-wrapper quart-native; do \
+		port=$$(echo $$service | sed 's/flask-wsgi/5001/;s/flask-asgi-wrapper/5002/;s/quart-native/5003/'); \
 		if curl -s http://localhost:$$port/health > /dev/null 2>&1; then \
 			echo "  $(GREEN)✓$(NC) $$service (port $$port) - OK"; \
 		else \
@@ -97,7 +96,7 @@ check-services: ## Attend que tous les services soient prêts
 	@echo "$(YELLOW)Waiting for services to be ready...$(NC)"
 	@for i in 1 2 3 4 5 6 7 8 9 10; do \
 		all_up=true; \
-		for port in 5001 5002 5003 5004; do \
+		for port in 5001 5002 5003; do \
 			if ! curl -s http://localhost:$$port/health > /dev/null 2>&1; then \
 				all_up=false; \
 				break; \
@@ -145,14 +144,11 @@ demo: up check-services ## Lance une démo interactive complète
 	@echo "$(YELLOW)1. Testing Flask WSGI (baseline)...$(NC)"
 	@time curl -s http://localhost:5001/parallel | jq .
 	@echo ""
-	@echo "$(YELLOW)2. Testing Flask Async Trap (fake async)...$(NC)"
+	@echo "$(YELLOW)2. Testing Flask ASGI Wrapper (overhead)...$(NC)"
 	@time curl -s http://localhost:5002/parallel | jq .
 	@echo ""
-	@echo "$(YELLOW)3. Testing Flask ASGI Wrapper (overhead)...$(NC)"
+	@echo "$(YELLOW)3. Testing Quart Native (true async)...$(NC)"
 	@time curl -s http://localhost:5003/parallel | jq .
-	@echo ""
-	@echo "$(YELLOW)4. Testing Quart Native (true async)...$(NC)"
-	@time curl -s http://localhost:5004/parallel | jq .
 	@echo ""
 	@echo "$(GREEN)Now testing concurrent requests (10 parallel)...$(NC)"
 	@echo ""
@@ -160,7 +156,7 @@ demo: up check-services ## Lance une démo interactive complète
 	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5001/parallel & done; wait
 	@echo ""
 	@echo "$(YELLOW)Quart Native with 10 concurrent requests:$(NC)"
-	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5004/parallel & done; wait
+	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5003/parallel & done; wait
 	@echo ""
 	@echo "$(GREEN)Demo complete! Notice the difference? ✨$(NC)"
 	@echo ""
@@ -169,8 +165,8 @@ demo: up check-services ## Lance une démo interactive complète
 quick-test: up check-services ## Test rapide avec quelques requêtes
 	@echo "$(YELLOW)Quick performance test...$(NC)"
 	@echo ""
-	@for service in flask-wsgi flask-async-trap flask-asgi-wrapper quart-native; do \
-		port=$$(echo $$service | sed 's/flask-wsgi/5001/;s/flask-async-trap/5002/;s/flask-asgi-wrapper/5003/;s/quart-native/5004/'); \
+	@for service in flask-wsgi flask-asgi-wrapper quart-native; do \
+		port=$$(echo $$service | sed 's/flask-wsgi/5001/;s/flask-asgi-wrapper/5002/;s/quart-native/5003/'); \
 		echo "$(YELLOW)Testing $$service:$(NC)"; \
 		time curl -s http://localhost:$$port/parallel > /dev/null; \
 		echo ""; \
@@ -202,7 +198,6 @@ up-flask: ## Lance uniquement Flask WSGI
 	$(DOCKER_COMPOSE) up -d flask-wsgi
 
 up-async: ## Lance uniquement Flask Async Trap
-	$(DOCKER_COMPOSE) up -d flask-async-trap
 
 up-wrapper: ## Lance uniquement Flask ASGI Wrapper
 	$(DOCKER_COMPOSE) up -d flask-asgi-wrapper

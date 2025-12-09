@@ -99,9 +99,8 @@ make clean         # Nettoyer tout
 Une fois lancés:
 
 - **Flask WSGI:** http://localhost:5001
-- **Flask Async:** http://localhost:5002
-- **Flask+ASGI:** http://localhost:5003
-- **Quart:** http://localhost:5004
+- **Flask+ASGI:** http://localhost:5002
+- **Quart:** http://localhost:5003
 
 ## Endpoints disponibles
 
@@ -126,8 +125,7 @@ Avec 100 requêtes concurrentes sur `/parallel`:
 | Solution | Temps | RPS | Verdict |
 |----------|-------|-----|---------|
 | Flask WSGI | ~25s | 4.0 | ⚠️ Baseline |
-| Flask Async | ~26s | 3.8 | 🚫 Pire! |
-| Flask+ASGI | ~29s | 3.4 | 🚫 Le pire |
+| Flask+ASGI | ~29s | 3.4 | 🚫 Overhead |
 | **Quart** | **~1.2s** | **83.3** | ✅ **21x plus rapide!** |
 
 ## Troubleshooting
@@ -165,8 +163,8 @@ make test
 
 ## Questions fréquentes
 
-**Q: Puis-je utiliser Flask avec async?**
-A: Non! Flask + async sur WSGI ne fonctionne pas. Utilisez Quart.
+**Q: Flask + ASGI wrapper est-il une bonne idée?**
+A: Non! Cela ajoute de l'overhead sans bénéfice. Utilisez Quart pour du vrai async.
 
 **Q: Quand utiliser Quart vs Flask?**
 A: Quart pour I/O-bound (API calls, DB), Flask pour CPU-bound.

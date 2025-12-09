@@ -21,14 +21,13 @@ services:
       timeout: 5s
       retries: 5
 
-  # 2. Flask avec async (piège!)
-  flask-async-trap:
-    build: ./2-flask-async-trap
-    container_name: flask-async-trap
+  # 2. Flask + ASGI wrapper (mauvaise idée)
+  flask-asgi-wrapper:
+    build: ./2-flask-asgi-wrapper
+    container_name: flask-asgi-wrapper
     ports:
       - "5002:5000"
     environment:
-      - FLASK_ENV=production
       - PYTHONUNBUFFERED=1
     networks:
       - async-demo
@@ -39,29 +38,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # 3. Flask + ASGI wrapper (mauvaise idée)
-  flask-asgi-wrapper:
-    build: ./3-flask-asgi-wrapper
-    container_name: flask-asgi-wrapper
-    ports:
-      - "5003:5000"
-    environment:
-      - PYTHONUNBUFFERED=1
-    networks:
-      - async-demo
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # 4. Quart natif (la bonne solution!)
+  # 3. Quart natif (la bonne solution!)
   quart-native:
-    build: ./4-quart-native
+    build: ./3-quart-native
     container_name: quart-native
     ports:
-      - "5004:5000"
+      - "5003:5000"
     environment:
       - PYTHONUNBUFFERED=1
     networks:

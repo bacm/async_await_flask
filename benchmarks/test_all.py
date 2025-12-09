@@ -15,9 +15,8 @@ from datetime import datetime
 # Configuration
 SERVICES = {
     "flask-wsgi": "http://localhost:5001",
-    "flask-async-trap": "http://localhost:5002",
-    "flask-asgi-wrapper": "http://localhost:5003",
-    "quart-native": "http://localhost:5004"
+    "flask-asgi-wrapper": "http://localhost:5002",
+    "quart-native": "http://localhost:5003"
 }
 
 ENDPOINTS = ['/parallel', '/multi-io', '/cpu-intensive', '/db-simulation', '/slow']
@@ -227,11 +226,12 @@ def run_benchmark_suite():
     # Test 2: 10 requêtes concurrentes
     print("\n--- TEST 2: 10 Concurrent Requests ---\n")
     for service_name, url in SERVICES.items():
-        for endpoint in ENDPOINTS[:2]:  # Seulement /parallel et /multi-io
+        for endpoint in ['/parallel', '/multi-io', '/slow']:
             result = test_concurrent_sync(service_name, url, endpoint, 10)
             results.add_result(service_name, endpoint, "concurrent_10", result)
 
     results.print_comparison('/parallel', 'concurrent_10')
+    results.print_comparison('/slow', 'concurrent_10')
 
     # Test 3: 50 requêtes concurrentes
     print("\n--- TEST 3: 50 Concurrent Requests ---\n")
@@ -293,9 +293,8 @@ def generate_markdown_report(results: BenchmarkResults, filename: str = "BENCHMA
         f.write("## Summary\n\n")
         f.write("This benchmark compares:\n")
         f.write("1. **Flask + WSGI** (baseline)\n")
-        f.write("2. **Flask + Async routes** (trap - doesn't work)\n")
-        f.write("3. **Flask + ASGI wrapper** (overhead, no benefits)\n")
-        f.write("4. **Quart native** (true async)\n\n")
+        f.write("2. **Flask + ASGI wrapper** (overhead, no benefits)\n")
+        f.write("3. **Quart native** (true async)\n\n")
 
         # Test principal: 100 requêtes concurrentes
         f.write("## Main Test: 100 Concurrent Requests (/parallel endpoint)\n\n")
@@ -314,7 +313,6 @@ def generate_markdown_report(results: BenchmarkResults, filename: str = "BENCHMA
 
         f.write("\n## Key Findings\n\n")
         f.write("- **Flask + WSGI**: Limited by workers × threads\n")
-        f.write("- **Flask + Async**: No improvement (WSGI limitation)\n")
         f.write("- **Flask + ASGI wrapper**: Worse due to overhead\n")
         f.write("- **Quart**: Massive improvement with true async\n\n")
 

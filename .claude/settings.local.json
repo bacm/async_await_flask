@@ -25,7 +25,8 @@
       "Bash(docker exec:*)",
       "Bash(tee:*)",
       "Bash(jq:*)",
-      "Bash(pipenv run python:*)"
+      "Bash(pipenv run python:*)",
+      "Bash(python test_all.py:*)"
     ],
     "deny": [],
     "ask": []

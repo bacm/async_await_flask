@@ -13,14 +13,12 @@ from pathlib import Path
 # Configuration des couleurs
 COLORS = {
     'flask-wsgi': '#0066CC',
-    'flask-async-trap': '#FF6600',
     'flask-asgi-wrapper': '#CC0000',
     'quart-native': '#00CC66'
 }
 
 LABELS = {
     'flask-wsgi': 'Flask WSGI\n(baseline)',
-    'flask-async-trap': 'Flask Async\n(trap)',
     'flask-asgi-wrapper': 'Flask+ASGI\n(overhead)',
     'quart-native': 'Quart Native\n(true async)'
 }
