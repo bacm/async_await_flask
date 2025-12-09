@@ -117,7 +117,6 @@ async def slow():
 - ⚠️ Flask tourne toujours sur WSGI
 - ⚠️ `async def` fonctionne mais ne libère PAS le worker
 - ⚠️ Aucun gain de performance
-- ⚠️ Peut même être PLUS LENT (overhead de async sans bénéfices)
 
 **Verdict:** 🚫 **C'EST UN PIÈGE!** N'utilisez pas async avec WSGI.
 
@@ -139,9 +138,8 @@ asgi_app = WsgiToAsgi(app)  # Wrapper WSGI → ASGI
 - ⚠️ Ajoute de l'overhead de conversion
 - ⚠️ Flask reste synchrone en dessous
 - ⚠️ Aucun bénéfice de async
-- ⚠️ **Plus lent** que Flask pur
 
-**Verdict:** 🚫 **NE FAITES PAS ÇA!** Pire des deux mondes.
+**Verdict:** 🚫 ça semble le pire des 2 mondes
 
 ---
 
