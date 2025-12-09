@@ -10,7 +10,7 @@ This benchmark compares:
 3. **Flask + ASGI wrapper** (overhead, no benefits)
 4. **Quart native** (true async)
 
-## Main Test: 100 Concurrent Requests (/slow endpoint)
+## Main Test: 100 Concurrent Requests (/parallel endpoint)
 
 | Solution | Total Time | RPS | P95 Latency | P99 Latency |
 |----------|------------|-----|-------------|-------------|

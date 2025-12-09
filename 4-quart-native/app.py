@@ -143,11 +143,12 @@ async def parallel():
         return {"task_id": task_id, "delay": delay}
 
     # Vraie exécution parallèle - ET le worker reste libre!
-    results = await asyncio.gather(
-        async_task(1, 0.5),
-        async_task(2, 0.5),
-        async_task(3, 0.5)
-    )
+    # results = await asyncio.gather(
+    results = []
+    results.append(async_task(1, 0.5))
+    results.append(async_task(2, 0.5))
+    results.append(async_task(3, 0.5))
+    # )
 
     total_duration = time.time() - start
     metrics["concurrent_requests_handled"] += 3

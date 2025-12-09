@@ -216,7 +216,5 @@ async def parallel():
     return jsonify({
         "message": "ASGI: Parallel execution with asyncio.gather",
         "duration": duration,
-        "expected": "~0.25s (2 × 0.25s in parallel)",
         "worker_id": os.getpid(),
-        "note": "2x faster than sequential!"
     })

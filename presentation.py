@@ -114,9 +114,10 @@ def demo_flask_async_trap():
     print(f"{Colors.RED}⚠️  ATTENTION: async/await dans Flask + WSGI ne fonctionne PAS!{Colors.ENDC}\n")
 
     code = """
-@app.route('/slow')
-async def slow():
-    await asyncio.sleep(1)  # Async mais...
+@app.route('/parallel')
+async def parallel():
+    await asyncio.sleep(0.25)  # Async mais...
+    await asyncio.sleep(0.25)  # Async mais...
     return {"status": "done"}
 """
 

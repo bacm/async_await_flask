@@ -43,7 +43,7 @@ def plot_concurrent_requests_comparison(results, output_dir: Path):
     test_labels = ['10 requests', '50 requests', '100 requests']
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-    fig.suptitle('Concurrent Requests Performance (/slow endpoint)', fontsize=16, fontweight='bold')
+    fig.suptitle('Concurrent Requests Performance (/parallel endpoint)', fontsize=16, fontweight='bold')
 
     x = np.arange(len(test_labels))
     width = 0.2
@@ -53,7 +53,7 @@ def plot_concurrent_requests_comparison(results, output_dir: Path):
         times = []
         for test_name in test_names:
             try:
-                time_val = results[service]['/slow'][test_name]['total_time']
+                time_val = results[service]['/parallel'][test_name]['total_time']
                 times.append(time_val)
             except (KeyError, TypeError):
                 times.append(0)
@@ -73,7 +73,7 @@ def plot_concurrent_requests_comparison(results, output_dir: Path):
         rps_values = []
         for test_name in test_names:
             try:
-                rps = results[service]['/slow'][test_name]['requests_per_second']
+                rps = results[service]['/parallel'][test_name]['requests_per_second']
                 rps_values.append(rps)
             except (KeyError, TypeError):
                 rps_values.append(0)
@@ -116,7 +116,7 @@ def plot_latency_percentiles(results, output_dir: Path):
 
         for service, label in LABELS.items():
             try:
-                value = results[service]['/slow'][test_name][metric]
+                value = results[service]['/parallel'][test_name][metric]
                 services.append(label)
                 values.append(value)
             except (KeyError, TypeError):
@@ -153,7 +153,7 @@ def plot_speedup_comparison(results, output_dir: Path):
 
     # Calculer le speedup par rapport à chaque solution
     try:
-        quart_time = results['quart-native']['/slow'][test_name]['total_time']
+        quart_time = results['quart-native']['/parallel'][test_name]['total_time']
     except (KeyError, TypeError):
         print("ERROR: Quart results not found!")
         return
@@ -166,7 +166,7 @@ def plot_speedup_comparison(results, output_dir: Path):
             continue
 
         try:
-            service_time = results[service]['/slow'][test_name]['total_time']
+            service_time = results[service]['/parallel'][test_name]['total_time']
             speedup = service_time / quart_time
             speedups.append(speedup)
             services.append(label)
@@ -199,7 +199,7 @@ def plot_speedup_comparison(results, output_dir: Path):
 
 def plot_endpoint_comparison(results, output_dir: Path):
     """Compare les performances sur différents endpoints"""
-    endpoints = ['/slow', '/multi-io', '/cpu-intensive', '/db-simulation']
+    endpoints = ['/parallel', '/multi-io', '/cpu-intensive', '/db-simulation']
     endpoint_labels = ['Slow\n(1s sleep)', 'Multi I/O\n(3x0.5s)', 'CPU\nIntensive', 'DB\nSimulation']
 
     fig, ax = plt.subplots(figsize=(14, 8))
@@ -252,7 +252,7 @@ def plot_scalability(results, output_dir: Path):
 
         for test_name, concurrency in test_configs:
             try:
-                time_val = results[service]['/slow'][test_name]['total_time']
+                time_val = results[service]['/parallel'][test_name]['total_time']
                 concurrency_levels.append(concurrency)
                 times.append(time_val)
             except (KeyError, TypeError):
@@ -275,7 +275,7 @@ def plot_scalability(results, output_dir: Path):
 
         for test_name, concurrency in test_configs:
             try:
-                rps = results[service]['/slow'][test_name]['requests_per_second']
+                rps = results[service]['/parallel'][test_name]['requests_per_second']
                 concurrency_levels.append(concurrency)
                 throughputs.append(rps)
             except (KeyError, TypeError):
@@ -308,7 +308,7 @@ def generate_summary_image(results, output_dir: Path):
             ha='center', fontsize=20, fontweight='bold')
 
     # Sous-titre
-    fig.text(0.5, 0.90, '100 Concurrent Requests - /slow endpoint (1 second I/O)',
+    fig.text(0.5, 0.90, '100 Concurrent Requests - /parallel endpoint (2×0.25s I/O)',
             ha='center', fontsize=14, style='italic')
 
     # Tableau des résultats
@@ -321,7 +321,7 @@ def generate_summary_image(results, output_dir: Path):
         y = y_start - i * y_step
 
         try:
-            result = results[service]['/slow'][test_name]
+            result = results[service]['/parallel'][test_name]
             total_time = result['total_time']
             rps = result['requests_per_second']
             p95 = result['p95_latency']

@@ -20,7 +20,7 @@ SERVICES = {
     "quart-native": "http://localhost:5004"
 }
 
-ENDPOINTS = ['/slow', '/multi-io', '/cpu-intensive', '/db-simulation', '/parallel']
+ENDPOINTS = ['/parallel', '/multi-io', '/cpu-intensive', '/db-simulation', '/slow']
 
 
 class BenchmarkResults:
@@ -227,27 +227,27 @@ def run_benchmark_suite():
     # Test 2: 10 requêtes concurrentes
     print("\n--- TEST 2: 10 Concurrent Requests ---\n")
     for service_name, url in SERVICES.items():
-        for endpoint in ENDPOINTS[:2]:  # Seulement /slow et /multi-io
+        for endpoint in ENDPOINTS[:2]:  # Seulement /parallel et /multi-io
             result = test_concurrent_sync(service_name, url, endpoint, 10)
             results.add_result(service_name, endpoint, "concurrent_10", result)
 
-    results.print_comparison('/slow', 'concurrent_10')
+    results.print_comparison('/parallel', 'concurrent_10')
 
     # Test 3: 50 requêtes concurrentes
     print("\n--- TEST 3: 50 Concurrent Requests ---\n")
     for service_name, url in SERVICES.items():
-        result = test_concurrent_sync(service_name, url, '/slow', 50)
-        results.add_result(service_name, '/slow', 'concurrent_50', result)
+        result = test_concurrent_sync(service_name, url, '/parallel', 50)
+        results.add_result(service_name, '/parallel', 'concurrent_50', result)
 
-    results.print_comparison('/slow', 'concurrent_50')
+    results.print_comparison('/parallel', 'concurrent_50')
 
     # Test 4: 100 requêtes concurrentes (le killer!)
     print("\n--- TEST 4: 100 Concurrent Requests (THE KILLER TEST) ---\n")
     for service_name, url in SERVICES.items():
-        result = test_concurrent_sync(service_name, url, '/slow', 100)
-        results.add_result(service_name, '/slow', 'concurrent_100', result)
+        result = test_concurrent_sync(service_name, url, '/parallel', 100)
+        results.add_result(service_name, '/parallel', 'concurrent_100', result)
 
-    results.print_comparison('/slow', 'concurrent_100')
+    results.print_comparison('/parallel', 'concurrent_100')
 
     return results
 
@@ -263,10 +263,10 @@ async def async_benchmark_suite():
     # Test avec asyncio
     print("\n--- Async Test: 100 Concurrent Requests ---\n")
     for service_name, url in SERVICES.items():
-        result = await test_concurrent_async(service_name, url, '/slow', 100)
-        results.add_result(service_name, '/slow', 'async_concurrent_100', result)
+        result = await test_concurrent_async(service_name, url, '/parallel', 100)
+        results.add_result(service_name, '/parallel', 'async_concurrent_100', result)
 
-    results.print_comparison('/slow', 'async_concurrent_100')
+    results.print_comparison('/parallel', 'async_concurrent_100')
 
     return results
 
@@ -298,14 +298,14 @@ def generate_markdown_report(results: BenchmarkResults, filename: str = "BENCHMA
         f.write("4. **Quart native** (true async)\n\n")
 
         # Test principal: 100 requêtes concurrentes
-        f.write("## Main Test: 100 Concurrent Requests (/slow endpoint)\n\n")
+        f.write("## Main Test: 100 Concurrent Requests (/parallel endpoint)\n\n")
         f.write("| Solution | Total Time | RPS | P95 Latency | P99 Latency |\n")
         f.write("|----------|------------|-----|-------------|-------------|\n")
 
         summary = results.get_summary()
         for service, data in summary.items():
-            if '/slow' in data and 'concurrent_100' in data['/slow']:
-                result = data['/slow']['concurrent_100']
+            if '/parallel' in data and 'concurrent_100' in data['/parallel']:
+                result = data['/parallel']['concurrent_100']
                 f.write(f"| {service} | ")
                 f.write(f"{result.get('total_time', 0):.2f}s | ")
                 f.write(f"{result.get('requests_per_second', 0):.1f} | ")

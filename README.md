@@ -82,9 +82,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/slow')
-def slow():
-    time.sleep(1)  # BLOQUE le worker
+@app.route('/parallel')
+def parallel():
+    time.sleep(0.25)  # BLOQUE le worker
+    time.sleep(0.25)  # BLOQUE le worker
     return {"status": "done"}
 ```
 
@@ -107,9 +108,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/slow')
-async def slow():
-    await asyncio.sleep(1)  # Async MAIS...
+@app.route('/parallel')
+async def parallel():
+    await asyncio.sleep(0.25)  # Async MAIS...
+    await asyncio.sleep(0.25)  # Async MAIS...
     return {"status": "done"}
 ```
 
@@ -152,9 +154,12 @@ from quart import Quart
 
 app = Quart(__name__)
 
-@app.route('/slow')
-async def slow():
-    await asyncio.sleep(1)  # Libère VRAIMENT le worker!
+@app.route('/parallel')
+async def parallel():
+    await asyncio.gather(
+        asyncio.sleep(0.25),
+        asyncio.sleep(0.25)
+    )  # Libère VRAIMENT le worker!
     return {"status": "done"}
 ```
 
@@ -260,14 +265,14 @@ Chaque service expose les mêmes endpoints:
 | Endpoint | Description |
 |----------|-------------|
 | `/health` | Health check |
-| `/slow` | Opération I/O de 1 seconde |
+| `/parallel` | 2 opérations I/O de 0.25s |
 | `/multi-io` | 3 appels séquentiels de 0.5s |
 | `/cpu-intensive` | Calcul CPU lourd |
 | `/db-simulation` | Simulation de requête DB (0.3s) |
 | `/metrics` | Statistiques du service |
 
 **Quart uniquement:**
-- `/parallel` - Démo d'exécution parallèle
+- `/slow` - Opération I/O de 0.25s
 - `/sse` - Server-Sent Events
 - `/ws` - WebSocket
 
@@ -292,9 +297,9 @@ make clean             # Nettoie tout
 
 ## 📊 Résultats Attendus
 
-### Test: 100 Requêtes Concurrentes (/slow endpoint)
+### Test: 100 Requêtes Concurrentes (/parallel endpoint)
 
-Chaque requête fait un `sleep(1)` (simule un appel API).
+Chaque requête fait deux `sleep(0.25)` (simule des appels API parallèles).
 
 | Solution | Temps Total | RPS | P95 Latency | Verdict |
 |----------|-------------|-----|-------------|---------|
@@ -429,7 +434,7 @@ Les benchmarks testent:
 
 ### Endpoints Testés
 
-- `/slow` - 1s sleep (I/O pur)
+- `/parallel` - 2×0.25s sleep (I/O parallèle ou séquentiel)
 - `/multi-io` - 3×0.5s sleep séquentiel
 - `/cpu-intensive` - Calcul CPU lourd
 - `/db-simulation` - Simule une requête DB

@@ -60,9 +60,9 @@ Une fois les services démarrés:
 curl http://localhost:5001/health  # Flask WSGI
 curl http://localhost:5004/health  # Quart
 
-# Test de performance (requête lente de 1s)
-time curl http://localhost:5001/slow
-time curl http://localhost:5004/slow
+# Test de performance (requête parallèle de 2×0.25s)
+time curl http://localhost:5001/parallel
+time curl http://localhost:5004/parallel
 ```
 
 ## Benchmarks complets
@@ -108,20 +108,20 @@ Une fois lancés:
 Sur chaque service:
 
 - `/health` - Health check
-- `/slow` - 1s sleep (I/O)
+- `/parallel` - 2×0.25s sleep (I/O)
 - `/multi-io` - 3×0.5s séquentiel
 - `/cpu-intensive` - Calcul CPU
 - `/db-simulation` - Simule DB query
 - `/metrics` - Métriques du service
 
 **Quart uniquement:**
-- `/parallel` - Exécution parallèle
+- `/slow` - Opération I/O de 0.25s
 - `/sse` - Server-Sent Events
 - `/ws` - WebSocket
 
 ## Résultats attendus
 
-Avec 100 requêtes concurrentes sur `/slow`:
+Avec 100 requêtes concurrentes sur `/parallel`:
 
 | Solution | Temps | RPS | Verdict |
 |----------|-------|-----|---------|

@@ -1,4 +1,4 @@
-.PHONY: help build up down clean test visual demo report logs status health check-services
+.PHONY: help build up down clean test visual demo report logs status health check-services rebuild
 
 # Variables
 COMPOSE_FILE := docker-compose.global.yml
@@ -49,6 +49,17 @@ down: ## Arrête tous les services
 	@echo "$(GREEN)✓ All services stopped$(NC)"
 
 restart: down up ## Redémarre tous les services
+
+rebuild: down ## Rebuild complètement tous les containers
+	@echo "$(YELLOW)Rebuilding all containers from scratch...$(NC)"
+	$(DOCKER_COMPOSE) build --no-cache
+	@echo "$(GREEN)✓ Rebuild complete!$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Starting services...$(NC)"
+	$(DOCKER_COMPOSE) up -d
+	@echo "$(GREEN)✓ All services started!$(NC)"
+	@echo ""
+	@echo "Run '$(GREEN)make health$(NC)' to check if services are ready"
 
 clean: ## Nettoie tout (containers, volumes, images)
 	@echo "$(RED)Cleaning up everything...$(NC)"
@@ -132,24 +143,24 @@ demo: up check-services ## Lance une démo interactive complète
 	@echo "$(GREEN)╚════════════════════════════════════════════════════════════════════╝$(NC)"
 	@echo ""
 	@echo "$(YELLOW)1. Testing Flask WSGI (baseline)...$(NC)"
-	@time curl -s http://localhost:5001/slow | jq .
+	@time curl -s http://localhost:5001/parallel | jq .
 	@echo ""
 	@echo "$(YELLOW)2. Testing Flask Async Trap (fake async)...$(NC)"
-	@time curl -s http://localhost:5002/slow | jq .
+	@time curl -s http://localhost:5002/parallel | jq .
 	@echo ""
 	@echo "$(YELLOW)3. Testing Flask ASGI Wrapper (overhead)...$(NC)"
-	@time curl -s http://localhost:5003/slow | jq .
+	@time curl -s http://localhost:5003/parallel | jq .
 	@echo ""
 	@echo "$(YELLOW)4. Testing Quart Native (true async)...$(NC)"
-	@time curl -s http://localhost:5004/slow | jq .
+	@time curl -s http://localhost:5004/parallel | jq .
 	@echo ""
 	@echo "$(GREEN)Now testing concurrent requests (10 parallel)...$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Flask WSGI with 10 concurrent requests:$(NC)"
-	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5001/slow & done; wait
+	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5001/parallel & done; wait
 	@echo ""
 	@echo "$(YELLOW)Quart Native with 10 concurrent requests:$(NC)"
-	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5004/slow & done; wait
+	@time for i in 1 2 3 4 5 6 7 8 9 10; do curl -s http://localhost:5004/parallel & done; wait
 	@echo ""
 	@echo "$(GREEN)Demo complete! Notice the difference? ✨$(NC)"
 	@echo ""
@@ -161,7 +172,7 @@ quick-test: up check-services ## Test rapide avec quelques requêtes
 	@for service in flask-wsgi flask-async-trap flask-asgi-wrapper quart-native; do \
 		port=$$(echo $$service | sed 's/flask-wsgi/5001/;s/flask-async-trap/5002/;s/flask-asgi-wrapper/5003/;s/quart-native/5004/'); \
 		echo "$(YELLOW)Testing $$service:$(NC)"; \
-		time curl -s http://localhost:$$port/slow > /dev/null; \
+		time curl -s http://localhost:$$port/parallel > /dev/null; \
 		echo ""; \
 	done
 

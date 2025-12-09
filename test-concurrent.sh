@@ -27,7 +27,7 @@ test_service() {
 
 # Default values
 COUNT=10
-ENDPOINT="/slow"
+ENDPOINT="/parallel"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
