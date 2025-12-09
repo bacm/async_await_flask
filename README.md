@@ -1,5 +1,9 @@
 # Flask vs Quart: Async/Await Démonstration
 
+## Définition
+`async/await` permet de mettre une fonction en pause en attendant une opération non bloquante, sans arrêter le thread.
+Pendant cette pause, l’event loop — une boucle centrale qui orchestre toutes les tâches asynchrones — continue d’exécuter d’autres tâches et reprend la fonction dès que le résultat est prêt.
+
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
 [![Quart](https://img.shields.io/badge/Quart-0.19.4-blue.svg)](https://quart.palletsprojects.com/)
