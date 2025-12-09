@@ -49,21 +49,24 @@ async def handle_request():
 ```
 
 #### Comparaison Visuelle avec 1 worker
+Avec un IO de 300 secs, et 2 requêtes simultanées
 ```
 SYNCHRONE (Flask)
 ═════════════════
 Requête 1: [████████████] 500ms          
-                          Requête 2: [████████████████████] 800ms
-           └──────────────────────────────────────────────┘
-                             Total: 1300ms
+                          Requête 2: [████████████] 500ms          
+           └──────────────────────────────────────┘
+                             Total: 1000ms
 
 
-ASYNCHRONE (Quart)  
-══════════════════
-Requête 1: [████████████] 500ms
-Requête 2: [████████████████████] 800ms
-           └──────────────────┘
-              Total: 800ms
+ASYNCHRONE (Quart) avec I/O non bloquants
+══════════════════════════════════════════
+Requête 1: [██ CPU ██][...... I/O async ......][██ CPU ██]   500ms total
+Requête 2:            [██ CPU ██][...... I/O async ......][██ CPU ██]   600ms total
+                      │              │
+           └─ 100 ms ─└────── SUPERPOSITION DES I/O ─────┘└ 100 ms ─┘
+
+                       Temps total du serveur : 600ms
 ```
 
 ---
