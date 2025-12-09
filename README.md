@@ -91,7 +91,7 @@ def slow():
 **Caractéristiques:**
 - ✅ Stable, mature, bien compris
 - ✅ Parfait pour des applications CPU-bound
-- ❌ Limité par `workers × threads`
+- ❌ Limité par `workers × threads` si utilisation de gthread sinon limité par `workers`
 - ❌ Chaque requête bloque un thread
 
 **Configuration typique:** Gunicorn avec 2 workers × 2 threads = **4 requêtes maximum en parallèle**
